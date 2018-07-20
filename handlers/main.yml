@@ -1,0 +1,11 @@
+---
+
+  - name: reload systemctl
+    shell: systemctl daemon-reload
+    changed_when: False
+
+  - name: reload reverseproxy
+    shell: "docker-compose up -d"
+    args:
+      chdir: "{{ reverseproxy.path }}"
+    changed_when: False

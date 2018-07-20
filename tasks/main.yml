@@ -1,0 +1,39 @@
+---
+  - name: ensure required directories exist
+    file:
+      dest: "{{ item }}"
+      state: directory
+    with_items:
+      - "{{ reverseproxy.path }}"
+      - "{{ reverseproxy.data }}"
+      - "{{ reverseproxy.conf }}"
+
+  - name: ensure docker service file exists
+    template:
+      src: "docker-compose.yml.j2"
+      dest: "{{ reverseproxy.path }}/docker-compose.yml"
+    notify:
+      - reload reverseproxy
+
+  - name: ensure proxy configuration exists
+    template:
+      src: "traefik.toml.j2"
+      dest: "{{ reverseproxy.conf }}/traefik.toml"
+    notify:
+      - reload reverseproxy
+
+  - name: ensure proxy is registered as a system service
+    template:
+      src: "reverseproxy.service.j2"
+      dest: "/lib/systemd/system/reverseproxy.service"
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+      - reload systemctl
+
+  - name: ensure proxy is running and enabled at boot
+    service:
+      name: reverseproxy
+      enabled: yes
+      state: started

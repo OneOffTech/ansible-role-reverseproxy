@@ -1,0 +1,23 @@
+version: '2'
+
+networks:
+  web:
+    driver: "bridge"
+
+services:
+  proxy:
+    image: "traefik:1.6.4"
+    command: "--logLevel=ERROR"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "{{ reverseproxy.data }}/:/cert/"
+      - "{{ reverseproxy.conf }}/:/etc/traefik/:ro"
+    labels:
+      - "traefik.enable=false" # set to true to expose Monitoring & API
+      - "traefik.backend=proxy"
+      - "traefik.port=8080"
+    networks:
+      - "web"

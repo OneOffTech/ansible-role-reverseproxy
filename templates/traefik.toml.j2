@@ -1,0 +1,58 @@
+# accept self-signed SSL certs for backends
+InsecureSkipVerify = true
+
+defaultEntryPoints = ["http", "https"]
+
+[acme]
+email = "{{ reverseproxy.letsencrypt_email }}"
+storage = "cert/acme.json"
+entryPoint = "https"
+onDemand = false
+OnHostRule = true
+
+[acme.httpChallenge]
+entryPoint = "http"
+
+[entryPoints]
+  [entryPoints.http]
+    address = ":80"
+      [entryPoints.http.redirect]
+        entryPoint = "https"
+  [entryPoints.https]
+    address = ":443"
+      [entryPoints.https.tls]
+
+[web]
+# own web server address (displays statistics)
+address = ":8080"
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+domain = "docker.local"
+watch = true
+exposedbydefault = false
+
+# new domains and subdomains can be configured here.
+# note that domains and subdomains not defined in this file will still work,
+# when defined in a container Host-Rule. However, they will generate
+# their own ACME request, and will count towards LetsEncrypt's rate limit.
+#
+#[[acme.domains]]
+#  main = "example.com"
+#  sans = [
+#    # services
+#    "mumble.example.com",
+#    # ...
+#
+#    # web vhosts:
+#    "www.example.com",
+#    "git.example.com",
+#    "mail.example.com",
+#    "chat.example.com",
+#  ]
+
+# You can define multiple of these blocks, each of which will result in one
+# certificate.
+#[[acme.domains]]
+#  main = "example.org"
+#  sans = ["www.example.org", "mail.example.org"]
