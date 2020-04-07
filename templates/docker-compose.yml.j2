@@ -1,23 +1,27 @@
-version: '2'
+version: '3.6'
 
 networks:
-  web:
+  traefik_web:
     driver: "bridge"
 
 services:
   proxy:
-    image: "traefik:1.7"
-    command: "--logLevel=ERROR"
+    image: "traefik:v2.2"
+    # command: "--logLevel=ERROR"
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "{{ reverseproxy.data }}/:/cert/"
+      - "{{ reverseproxy.data }}/:/letsencrypt/"
       - "{{ reverseproxy.conf }}/:/etc/traefik/:ro"
     labels:
-      - "traefik.enable=false" # set to true to expose Monitoring & API
-      - "traefik.backend=proxy"
-      - "traefik.port=8080"
+      - "traefik.enable=true"
+      ## global redirect to https
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.entrypoints=web"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
     networks:
-      - "web"
+      - "traefik_web"
+

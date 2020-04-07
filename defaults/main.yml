@@ -1,0 +1,2 @@
+---
+default_rule: "{% raw %}Host(`{{ normalize .Name }}.example.domain`){% endraw %}"
