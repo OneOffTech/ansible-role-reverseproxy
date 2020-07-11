@@ -12,8 +12,10 @@
   [entryPoints.websecure]
     address = ":443"
 
+{% if 'api' in reverseproxy %}
 [api]
   dashboard = true
+{% endif %}
 
 [log]
   level = "{{ reverseproxy.log_level | default(log_level, true) }}"

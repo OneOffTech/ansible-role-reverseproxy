@@ -24,6 +24,13 @@
     notify:
       - reload reverseproxy
 
+  - name: ensure default rules files exists
+    template:
+      src: "rules_middlewares.toml.j2"
+      dest: "{{ reverseproxy.path }}/rules/middlewares.toml"
+    notify:
+      - reload reverseproxy
+
   - name: ensure proxy is registered as a system service
     template:
       src: "reverseproxy.service.j2"
