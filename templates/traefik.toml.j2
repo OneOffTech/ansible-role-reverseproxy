@@ -1,9 +1,9 @@
-[global]
-  checkNewVersion = false
-  sendAnonymousUsage = false
+# [global]
+#   checkNewVersion = false
+#   sendAnonymousUsage = false
 
 [serversTransport]
-  insecureSkipVerify = true
+  insecureSkipVerify = false
 
 [entryPoints]
   [entryPoints.web]
@@ -12,12 +12,11 @@
   [entryPoints.websecure]
     address = ":443"
 
-[log]
-  level = "INFO"
+# [log]
+#   level = "INFO"
 
 [accessLog]
   format = "common"
-  filePath = "/dev/null"
 
 # [api]
 #   dashboard = true
