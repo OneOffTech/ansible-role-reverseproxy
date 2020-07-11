@@ -16,12 +16,12 @@
   dashboard = true
 
 [log]
-  level = "DEBUG"
+  level = "{{ reverseproxy.log_level | default(log_level, true) }}"
 
 [accessLog]
   format = "common"
-  filePath = "/logs/traefik.log"
-  bufferingSize = 100 # Configuring a buffer of 100 lines
+  # filePath = "/logs/traefik.log"
+  # bufferingSize = 100 # Configuring a buffer of 100 lines
 
   [accessLog.filters]
     statusCodes = ["200", "400-500"]
