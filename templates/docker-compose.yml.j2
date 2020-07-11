@@ -7,20 +7,6 @@ networks:
 services:
   proxy:
     image: "traefik:v2.2"
-    command: 
-      - --global.checkNewVersion=false
-      - --global.sendAnonymousUsage=false
-      - --log=true
-      - --log.level=DEBUG # (Default: error) DEBUG, INFO, WARN, ERROR, FATAL, PANIC
-      - --accessLog=true
-      - --accessLog.filePath=/logs/traefik.log
-      - --accessLog.bufferingSize=100 # Configuring a buffer of 100 lines
-      - --accessLog.filters.statusCodes=400-499
-      - --providers.docker.exposedByDefault=false
-      - --providers.file.directory=/rules # Load dynamic configuration from one or more .toml or .yml files in a directory.
-      - --providers.file.watch=true # Only works on top level files in the rules folder
-      - --entryPoints.traefik.address=:8080
-      - --api=true
     ports:
       - "80:80"
       - "443:443"
@@ -40,7 +26,7 @@ services:
       - "traefik.http.routers.http-catchall.entrypoints=web"
       - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
       # HTTP Routers
-      - "traefik.http.routers.traefik-rtr.entrypoints=web"
+      - "traefik.http.routers.traefik-rtr.entrypoints=websecure"
       - "traefik.http.routers.traefik-rtr.rule=Host(`{{ reverseproxy.api }}`)"
       - "traefik.http.routers.traefik-rtr.tls=true"
       - "traefik.http.routers.traefik-rtr.tls.certresolver=mytls"

@@ -1,6 +1,6 @@
-# [global]
-#   checkNewVersion = false
-#   sendAnonymousUsage = false
+[global]
+  checkNewVersion = false
+  sendAnonymousUsage = false
 
 [serversTransport]
   insecureSkipVerify = false
@@ -12,11 +12,19 @@
   [entryPoints.websecure]
     address = ":443"
 
-# [log]
-#   level = "INFO"
+[api]
+  dashboard = true
+
+[log]
+  level = "DEBUG"
 
 [accessLog]
   format = "common"
+  filePath=/logs/traefik.log
+  bufferingSize=100 # Configuring a buffer of 100 lines
+
+  [accessLog.filters]
+    statusCodes=400-500
 
 # [metrics]
 #   [metrics.prometheus]
@@ -28,6 +36,12 @@
   network = "traefik_web"
   exposedByDefault = false
   defaultRule = "{{ reverseproxy.default_rule | default(default_rule, true) }}"
+
+# Load dynamic configuration from one or more .toml or .yml files in a directory.
+[providers.file]
+  directory = "/rules"
+  watch = true
+
 
 [certificatesResolvers.mytls.acme]
   email = "{{ reverseproxy.letsencrypt_email }}"
