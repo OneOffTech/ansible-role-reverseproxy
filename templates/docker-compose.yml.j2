@@ -19,6 +19,8 @@ services:
       - --providers.docker.exposedByDefault=false
       - --providers.file.directory=/rules # Load dynamic configuration from one or more .toml or .yml files in a directory.
       - --providers.file.watch=true # Only works on top level files in the rules folder
+      - --entryPoints.traefik.address=:8080
+      - --api=true
     ports:
       - "80:80"
       - "443:443"
@@ -38,7 +40,7 @@ services:
       - "traefik.http.routers.http-catchall.entrypoints=web"
       - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
       # HTTP Routers
-      - "traefik.http.routers.traefik-rtr.entrypoints=https"
+      - "traefik.http.routers.traefik-rtr.entrypoints=web"
       - "traefik.http.routers.traefik-rtr.rule=Host(`{{ reverseproxy.api }}`)"
       - "traefik.http.routers.traefik-rtr.tls=true"
       - "traefik.http.routers.traefik-rtr.tls.certresolver=mytls"
