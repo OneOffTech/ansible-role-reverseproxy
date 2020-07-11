@@ -5,6 +5,7 @@
       state: directory
     with_items:
       - "{{ reverseproxy.path }}"
+      - "{{ reverseproxy.path }}/rules"
       - "{{ reverseproxy.data }}"
       - "{{ reverseproxy.conf }}"
       - "{{ reverseproxy.logs }}"
