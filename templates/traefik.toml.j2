@@ -20,11 +20,11 @@
 
 [accessLog]
   format = "common"
-  filePath=/logs/traefik.log
-  bufferingSize=100 # Configuring a buffer of 100 lines
+  filePath = "/logs/traefik.log"
+  bufferingSize = 100 # Configuring a buffer of 100 lines
 
   [accessLog.filters]
-    statusCodes=400-500
+    statusCodes = ["200", "400-500"]
 
 # [metrics]
 #   [metrics.prometheus]
