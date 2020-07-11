@@ -7,6 +7,7 @@
       - "{{ reverseproxy.path }}"
       - "{{ reverseproxy.data }}"
       - "{{ reverseproxy.conf }}"
+      - "{{ reverseproxy.logs }}"
 
   - name: ensure docker service file exists
     template:
