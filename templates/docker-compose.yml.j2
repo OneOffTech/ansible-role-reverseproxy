@@ -14,7 +14,9 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "{{ reverseproxy.path }}/rules/:/rules/"
       - "{{ reverseproxy.data }}/:/letsencrypt/"
+{% if 'logs' in reverseproxy %}
       - "{{ reverseproxy.logs }}/:/logs/"
+{% endif %}
       - "{{ reverseproxy.conf }}/:/etc/traefik/:ro"
     security_opt:
       - no-new-privileges:true # limit containers to gain new privileges https://docs.docker.com/engine/reference/run/#security-configuration
