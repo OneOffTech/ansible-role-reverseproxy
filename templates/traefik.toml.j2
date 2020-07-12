@@ -35,7 +35,7 @@
 # [ping]
 
 [providers.docker]
-  network = "traefik_web"
+  network = "reverseproxy_traefik_web"
   exposedByDefault = false
   defaultRule = "{{ reverseproxy.default_rule | default(default_rule, true) }}"
 
