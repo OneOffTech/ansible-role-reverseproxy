@@ -1,58 +1,54 @@
-# accept self-signed SSL certs for backends
-InsecureSkipVerify = true
+[global]
+  checkNewVersion = false
+  sendAnonymousUsage = false
 
-defaultEntryPoints = ["http", "https"]
-
-[acme]
-email = "{{ reverseproxy.letsencrypt_email }}"
-storage = "cert/acme.json"
-entryPoint = "https"
-onDemand = false
-OnHostRule = true
-
-[acme.httpChallenge]
-entryPoint = "http"
+[serversTransport]
+  insecureSkipVerify = false
 
 [entryPoints]
-  [entryPoints.http]
+  [entryPoints.web]
     address = ":80"
-      [entryPoints.http.redirect]
-        entryPoint = "https"
-  [entryPoints.https]
+
+  [entryPoints.websecure]
     address = ":443"
-      [entryPoints.https.tls]
 
-[web]
-# own web server address (displays statistics)
-address = ":8080"
+{% if 'api' in reverseproxy %}
+[api]
+  dashboard = true
+{% endif %}
 
-[docker]
-endpoint = "unix:///var/run/docker.sock"
-domain = "docker.local"
-watch = true
-exposedbydefault = false
+[log]
+  level = "{{ reverseproxy.log_level | default(log_level, true) }}"
 
-# new domains and subdomains can be configured here.
-# note that domains and subdomains not defined in this file will still work,
-# when defined in a container Host-Rule. However, they will generate
-# their own ACME request, and will count towards LetsEncrypt's rate limit.
-#
-#[[acme.domains]]
-#  main = "example.com"
-#  sans = [
-#    # services
-#    "mumble.example.com",
-#    # ...
-#
-#    # web vhosts:
-#    "www.example.com",
-#    "git.example.com",
-#    "mail.example.com",
-#    "chat.example.com",
-#  ]
+[accessLog]
+  format = "common"
+  # filePath = "/logs/traefik.log"
+  # bufferingSize = 100 # Configuring a buffer of 100 lines
 
-# You can define multiple of these blocks, each of which will result in one
-# certificate.
-#[[acme.domains]]
-#  main = "example.org"
-#  sans = ["www.example.org", "mail.example.org"]
+  [accessLog.filters]
+    statusCodes = ["200", "400-500"]
+
+# [metrics]
+#   [metrics.prometheus]
+#     entryPoint = "traefik"
+#     buckets = [0.1,0.3,1.2,5.0]
+# [ping]
+
+[providers.docker]
+  network = "reverseproxy_traefik_web"
+  exposedByDefault = false
+  defaultRule = "{{ reverseproxy.default_rule | default(default_rule, true) }}"
+
+# Load dynamic configuration from one or more .toml or .yml files in a directory.
+[providers.file]
+  directory = "/rules"
+  watch = true
+
+
+[certificatesResolvers.mytls.acme]
+  email = "{{ reverseproxy.letsencrypt_email }}"
+  storage = "/letsencrypt/acme.json"
+  [certificatesResolvers.mytls.acme.httpChallenge]
+    # used during the challenge
+    entryPoint = "web"
+

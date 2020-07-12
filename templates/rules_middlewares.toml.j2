@@ -1,0 +1,14 @@
+[http.middlewares]
+{% if 'api_user' in reverseproxy %}
+  [http.middlewares.middlewares-basic-auth]
+    [http.middlewares.middlewares-basic-auth.basicAuth]
+      users = [
+        "{{ reverseproxy.api_user }}",
+      ]
+      realm = "Traefik2 Basic Auth"
+{% endif %}
+
+  [http.middlewares.middlewares-rate-limit]
+    [http.middlewares.middlewares-rate-limit.rateLimit]
+      average = 100
+      burst = 50

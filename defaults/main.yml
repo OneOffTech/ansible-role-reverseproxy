@@ -1,0 +1,3 @@
+---
+default_rule: "{% raw %}Host(`{{ normalize .Name }}.example.domain`){% endraw %}"
+log_level: "ERROR"

@@ -5,8 +5,10 @@
       state: directory
     with_items:
       - "{{ reverseproxy.path }}"
+      - "{{ reverseproxy.path }}/rules"
       - "{{ reverseproxy.data }}"
       - "{{ reverseproxy.conf }}"
+      - "{{ reverseproxy.logs }}"
 
   - name: ensure docker service file exists
     template:
@@ -19,6 +21,13 @@
     template:
       src: "traefik.toml.j2"
       dest: "{{ reverseproxy.conf }}/traefik.toml"
+    notify:
+      - reload reverseproxy
+
+  - name: ensure default rules files exists
+    template:
+      src: "rules_middlewares.toml.j2"
+      dest: "{{ reverseproxy.path }}/rules/middlewares.toml"
     notify:
       - reload reverseproxy
 
